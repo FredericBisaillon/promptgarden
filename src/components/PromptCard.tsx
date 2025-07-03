@@ -1,6 +1,7 @@
 'use client'
 
 import { Badge } from "@/components/ui/badge"
+import { useRouter } from "next/navigation"
 
 type Prompt = {
   id: string
@@ -12,8 +13,17 @@ type Prompt = {
 }
 
 export function PromptCard({ prompt }: { prompt: Prompt }) {
+  const router = useRouter()
+
+  const handleClick = () => {
+    router.push(`/prompt/${prompt.id}`)
+  }
+
   return (
-    <div className="border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition flex flex-col h-full">
+    <div 
+      className="border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition flex flex-col h-full cursor-pointer"
+      onClick={handleClick}
+    >
       {prompt.imageUrl && (
         <img
           src={prompt.imageUrl}
