@@ -1,12 +1,24 @@
+'use client'
+
 import { UserPrompt } from "@/data/mock-users"
+import { useRouter } from "next/navigation"
 
 interface ProfilePromptCardProps {
   prompt: UserPrompt
 }
 
 export function ProfilePromptCard({ prompt }: ProfilePromptCardProps) {
+  const router = useRouter()
+
+  const handleClick = () => {
+    router.push(`/prompt/${prompt.id}`)
+  }
+
   return (
-    <div className="w-full pb-3 flex flex-col items-start gap-3">
+    <div 
+      className="w-full pb-3 flex flex-col items-start gap-3 cursor-pointer"
+      onClick={handleClick}
+    >
       <img 
         src={prompt.imageUrl} 
         alt={prompt.title}

@@ -1,9 +1,5 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { cn } from "@/lib/utils"
-import { colors } from "@/constants/colors"
-
 interface TagProps {
   label: string
   onRemove?: () => void
@@ -12,15 +8,8 @@ interface TagProps {
 
 export function Tag({ label, onRemove, className }: TagProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      className={cn(
-        "flex items-center text-sm font-medium px-3 py-1 rounded-md",
-        className
-      )}
-      style={{ backgroundColor: colors.gray100, color: colors.textDark }}
+    <div
+      className={`flex items-center text-sm font-medium px-4 py-2 rounded-lg bg-gray-100 text-gray-900 ${className || ''}`}
     >
       {label}
       {onRemove && (
@@ -34,6 +23,6 @@ export function Tag({ label, onRemove, className }: TagProps) {
           ×
         </button>
       )}
-    </motion.div>
+    </div>
   )
 } 
