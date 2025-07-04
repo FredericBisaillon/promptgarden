@@ -2,9 +2,8 @@
 
 import { useState } from 'react'
 import { mockPromptDetail } from '@/data/mock-prompt-detail'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { Heart, Copy as CopyIcon, MessageCircle, Check, Send } from 'lucide-react'
 
 interface PromptDetailPageProps {
   promptId: string
@@ -12,23 +11,24 @@ interface PromptDetailPageProps {
 
 export default function PromptDetailPage({ promptId }: PromptDetailPageProps) {
   const [newComment, setNewComment] = useState('')
+  const [liked, setLiked] = useState(false)
+  const [copied, setCopied] = useState(false)
   
   // En production, on récupérerait les données via une API
   const prompt = mockPromptDetail
 
   const handleCopyPrompt = () => {
     navigator.clipboard.writeText(prompt.content)
-    // Ici on pourrait ajouter une notification de succès
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleSubmitComment = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (newComment.trim()) {
-      // En production, on enverrait le commentaire à l'API
-      console.log('Nouveau commentaire:', newComment)
-      setNewComment('')
-    }
+  const handleLikeClick = () => {
+    setLiked(!liked)
   }
+
+  // variable used to satisfy linter (may be used in future data fetching)
+  const promptIdRef = promptId
 
   return (
     <div className="w-full h-full px-40 py-5 flex justify-center items-start">
@@ -106,7 +106,7 @@ export default function PromptDetailPage({ promptId }: PromptDetailPageProps) {
         </div>
 
         {/* Zone de prompt */}
-        <div className="max-w-[480px] px-4 pt-3 pb-3 flex justify-start items-end gap-4 flex-wrap">
+        <div className="self-stretch px-4 pt-3 pb-3 flex justify-start items-end gap-4 flex-wrap">
           <div className="flex-1 min-w-[160px] flex flex-col justify-start items-start">
             <div className="self-stretch flex-1 min-h-[144px] p-[15px] bg-white rounded-lg border border-[#DBE0E5]">
               <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono leading-relaxed">
@@ -118,46 +118,40 @@ export default function PromptDetailPage({ promptId }: PromptDetailPageProps) {
 
         {/* Barre d'interactions */}
         <div className="self-stretch px-4 pt-2 pb-2 flex justify-start items-start gap-4 flex-wrap">
-          <div className="px-3 py-2 flex justify-center items-center gap-2">
-            <div className="flex flex-col justify-start items-start">
-              <div className="w-6 flex-1 relative overflow-hidden">
-                <div className="w-6 h-6 left-0 top-0 absolute bg-[#61758A] rounded-sm"></div>
-              </div>
-            </div>
-            <div className="flex flex-col justify-start items-start">
-              <div className="text-[#61758A] text-[13px] font-bold leading-5">
-                {prompt.interactions.likes}
-              </div>
-            </div>
-          </div>
+          <button
+            onClick={handleLikeClick}
+            className="px-3 py-2 flex justify-center items-center gap-2"
+          >
+            <Heart
+              className={`w-4 h-4 ${liked ? 'text-red-500 fill-red-500' : 'text-[#61758A]'}`}
+              fill={liked ? 'currentColor' : 'none'}
+            />
+            <span className="text-[#61758A] text-[13px] font-bold leading-5">
+              {prompt.interactions.likes}
+            </span>
+          </button>
           
           <div className="px-3 py-2 flex justify-center items-center gap-2">
-            <div className="flex flex-col justify-start items-start">
-              <div className="w-6 flex-1 relative overflow-hidden">
-                <div className="w-6 h-6 left-0 top-0 absolute bg-[#61758A] rounded-sm"></div>
-              </div>
-            </div>
-            <div className="flex flex-col justify-start items-start">
-              <div className="text-[#61758A] text-[13px] font-bold leading-5">
-                {prompt.interactions.comments}
-              </div>
-            </div>
+            <MessageCircle className="w-4 h-4 text-[#61758A]" />
+            <span className="text-[#61758A] text-[13px] font-bold leading-5">
+              {prompt.interactions.comments}
+            </span>
           </div>
           
-          <button 
+          <button
             onClick={handleCopyPrompt}
             className="px-3 py-2 flex justify-center items-center gap-2"
           >
-            <div className="flex flex-col justify-start items-start">
-              <div className="w-6 flex-1 relative overflow-hidden">
-                <div className="w-6 h-6 left-0 top-0 absolute bg-[#61758A] rounded-sm"></div>
-              </div>
-            </div>
-            <div className="flex flex-col justify-start items-start">
-              <div className="text-[#61758A] text-[13px] font-bold leading-5">
-                Copy
-              </div>
-            </div>
+            {copied ? (
+              <Check className="w-4 h-4 text-green-500 animate-bounce" />
+            ) : (
+              <CopyIcon className="w-4 h-4 text-[#61758A]" />
+            )}
+            <span
+              className={`text-[13px] font-bold leading-5 ${copied ? 'text-green-500' : 'text-[#61758A]'}`}
+            >
+              {copied ? 'Copied!' : 'Copy'}
+            </span>
           </button>
         </div>
 
@@ -199,40 +193,32 @@ export default function PromptDetailPage({ promptId }: PromptDetailPageProps) {
         ))}
 
         {/* Formulaire de nouveau commentaire */}
-        <div className="self-stretch px-4 pt-3 pb-3 flex justify-start items-center gap-3">
-          <div className="flex-1 self-stretch min-w-[160px] flex flex-col justify-start items-start">
-            <div className="self-stretch flex-1 rounded-lg flex justify-start items-start">
-              <div className="self-stretch pt-[15px] pl-[15px] pr-[15px] bg-white rounded-l-lg border-l border-t border-b border-[#DBE0E5] flex justify-end items-start">
-                <img 
-                  src="https://placehold.co/40x40" 
-                  alt="Your avatar"
-                  className="flex-1 h-10 relative rounded-full"
-                />
-              </div>
-              <div className="flex-1 self-stretch flex flex-col justify-start items-start">
-                <div className="self-stretch h-[79px] pt-[22px] pb-2 pl-2 pr-3 bg-white rounded-tr-lg border-t border-r border-[#DBE0E5]">
-                  <Textarea
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Write a comment..."
-                    className="w-full h-full border-0 focus:ring-0 resize-none bg-transparent"
-                    rows={3}
-                  />
-                </div>
-                <div className="self-stretch pb-[15px] pl-[15px] pr-[15px] bg-white rounded-br-lg border-r border-b border-[#DBE0E5] flex justify-end items-start">
-                  <div className="flex justify-end items-center gap-4">
-                    <div className="flex-1 flex justify-start items-center gap-1">
-                      <div className="flex-1 p-1.5 flex justify-center items-center">
-                        <div className="flex-1 flex flex-col justify-start items-center">
-                          <div className="self-stretch flex-1 relative overflow-hidden">
-                            <div className="w-5 h-5 left-0 top-0 absolute bg-[#61758A] rounded-sm"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        <div
+          data-prompt-id={promptIdRef}
+          className="self-stretch px-4 pt-3 pb-3 flex items-start gap-3"
+        >
+          <img
+            src="https://placehold.co/40x40"
+            alt="Your avatar"
+            className="w-10 h-10 rounded-full"
+          />
+          <div className="flex-1">
+            <Textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Write a comment..."
+              className="w-full min-h-[80px] resize-none rounded-lg border border-[#DBE0E5] p-3 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              rows={3}
+            />
+            <div className="flex justify-end mt-2">
+              <button
+                type="button"
+                disabled={newComment.trim() === ''}
+                className="inline-flex items-center gap-2 rounded-md bg-[#2563EB] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors enabled:hover:bg-[#1e4ed8] disabled:opacity-50"
+              >
+                <Send className="w-4 h-4" />
+                Post
+              </button>
             </div>
           </div>
         </div>
