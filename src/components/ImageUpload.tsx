@@ -12,7 +12,7 @@ interface ImageUploadProps {
 }
 
 export function ImageUpload({ label = "Image", onChange, initialFile = null }: ImageUploadProps) {
-  const [image, setImage] = useState<File | null>(initialFile)
+  const [, setImage] = useState<File | null>(initialFile)
   const [previewUrl, setPreviewUrl] = useState<string | null>(
     initialFile ? URL.createObjectURL(initialFile) : null
   )
