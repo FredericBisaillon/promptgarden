@@ -27,7 +27,7 @@ export function Header() {
           className="hidden md:flex items-center gap-6 text-sm font-medium"
           style={{ color: colors.textDark }}
         >
-          <a href="#" className="hover:underline">Home</a>
+          <Link href="/" className="hover:underline">Home</Link>
           <Link href="/explore" className="hover:underline">Explore</Link>
           <Link href="/profile" className="hover:underline">My Prompts</Link>
         </nav>
@@ -81,14 +81,14 @@ export function Header() {
         <div className="md:hidden border-t border-gray-200 bg-white">
           <div className="px-4 py-4 space-y-4">
             <nav className="space-y-3">
-              <a 
-                href="#" 
+              <Link 
+                href="/" 
                 className="block text-sm font-medium hover:underline"
                 style={{ color: colors.textDark }}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
-              </a>
+              </Link>
               <Link 
                 href="/explore" 
                 className="block text-sm font-medium hover:underline"

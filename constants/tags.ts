@@ -1,0 +1,16 @@
+export const TAGS: string[] = [
+  "Marketing",
+  "Twitter",
+  "Minimalism",
+  "Startups",
+  "Investissement",
+  "IA",
+  "Copywriting",
+  "Skincare",
+  "Vente",
+  "Méditation",
+  "Débutants",
+  "Bien-être",
+  "Data",
+  "Optimisation",
+] 
